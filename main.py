@@ -23,7 +23,7 @@ def get_data_return_numpy_array(type: str) -> (np.array, np.array):
             if(row[0] != "filename"):
                 # labels_dict[row[0]] = np.array(row[2:], int)
                 image = Image.open(datasets_filepath + f"\{type}\\" + row[0])
-                photos_array.append(np.array(image.resize((100, 180))))
+                photos_array.append(np.array(image.resize((350, 350))))
                 labels_array.append(np.array(row[2:], int))
 
 
