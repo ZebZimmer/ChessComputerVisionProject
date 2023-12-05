@@ -6,3 +6,4 @@ ipykernel
 matplotlib
 cv
 tensorflow
+berserk
