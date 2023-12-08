@@ -10,3 +10,4 @@ berserk
 transformers
 datasets
 opencv-contrib-python
+stockfish
