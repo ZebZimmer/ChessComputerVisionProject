@@ -15,7 +15,7 @@ class ChessCNN_YOLO:
         self.model.add(layers.Dense(64, activation='relu'))
 
         # Output layer
-        self.model.add(layers.Dense(12, activation='softmax')) # Try sigmoid
+        self.model.add(layers.Dense(12, activation='softmax'))
 
         self.model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 

@@ -7,3 +7,6 @@ matplotlib
 cv
 tensorflow
 berserk
+transformers
+datasets
+opencv-contrib-python
