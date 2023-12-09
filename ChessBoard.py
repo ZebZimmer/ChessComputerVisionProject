@@ -25,17 +25,37 @@ class ChessBoardObj:
 
         return (corners, ids)                           
 
-    def detect_chessboard(self):
+    def detect_chessboard(self, crop=False):
         '''
         Take photo of the chess board and use the ArUco markers to find the relative positions of the chess squares.
         Return the 4 corners of the board and the image
         '''
-        ids = np.array((3,3))
-        while ids.shape[0] < 4:
+        good_photo = False
+        while not good_photo:
             print("Taking a photo of the board")
-            self.image = take_photo(3)
+            self.image = take_photo(3, resize=(not crop))
             self.labeled_image = self.image
             corners, ids = self.detect_aruco_markers()
+            print(f"Found {ids.shape[0]} aruco tags {[i for i in ids] = }")
+
+            #Crop the image to be just the board
+            if crop and ids.shape[0] >= 4:
+                self.corners_dict = {ids[0][0]: (int(corners[0][0][0][0]), int(corners[0][0][0][1])), ids[1][0]: (int(corners[1][0][0][0]), int(corners[1][0][0][1])),
+                                    ids[2][0]: (int(corners[2][0][0][0]), int(corners[2][0][0][1])), ids[3][0]: (int(corners[3][0][0][0]), int(corners[3][0][0][1]))}
+                print(ids)
+                self.image = self.image[self.corners_dict[10][1] - 60 : self.corners_dict[11][1] + 40, self.corners_dict[11][0] - 40 : self.corners_dict[12][0] + 40,  :]
+                # cv2.imshow('Output', cv2.resize(self.image, (832, 832)))
+                # cv2.waitKey(0)
+                # cv2.destroyAllWindows() 
+                self.image = cv2.resize(self.image, (416,416))
+                corners, ids = self.detect_aruco_markers()
+                print(f"Photo after crop found {ids.shape[0]} tags")
+                self.labeled_image = self.image
+            try:
+                if ids.shape[0] >= 4:
+                    good_photo = True
+            except:
+                print("Bad photo please retake")
 
         self.corners_dict = {ids[0][0]: (int(corners[0][0][0][0]), int(corners[0][0][0][1])), ids[1][0]: (int(corners[1][0][0][0]), int(corners[1][0][0][1])),
                         ids[2][0]: (int(corners[2][0][0][0]), int(corners[2][0][0][1])), ids[3][0]: (int(corners[3][0][0][0]), int(corners[3][0][0][1]))}
@@ -116,13 +136,12 @@ class ChessBoardObj:
         
         self.guess_list.append((bbox_data, guess))
 
-        offset_list = [0, 10, 16, 18, 22, 22, 14, 8, -1]
-
+        offset_list = [0, 10, 16, 18, 22, 18, 10, 2, -100]
         for i in range(8):
             v1 = (self.corners_dict[10][0] + (i * v_x1), self.corners_dict[10][1])
             v2 = (self.corners_dict[10][0] + ((i+1) * v_x1), self.corners_dict[10][1])
-            v3 = (self.corners_dict[11][0] + ((i+1) * v_x1), self.corners_dict[11][1])
-            v4 = (self.corners_dict[11][0] + (i * v_x1), self.corners_dict[11][1])
+            v3 = (self.corners_dict[11][0] + ((i+1) * v_x2), self.corners_dict[11][1])
+            v4 = (self.corners_dict[11][0] + (i * v_x2), self.corners_dict[11][1])
 
             if self.point_in_quadrilateral([location[0], location[1]], v1, v2, v3, v4):
                 for j in range(8):
@@ -132,25 +151,36 @@ class ChessBoardObj:
                     if (location[1] > (self.corners_dict[10][1] + (h_y1 * j) - offset)) and (location[1] < (self.corners_dict[10][1] + (h_y1 * (j + 1)) - offset)):
                         self.board_state[j][i].append(self.FEN_pieces[guess])
                         return 0
-
-        # # Search through all squares, it simplifies the math
-        # for i in range(8):
-        #     x_upper = self.corners_dict[10][0] + v_x1 * (i + 1)
-        #     x_lower = self.corners_dict[10][0] + v_x1 * i
-
-        #     offset = h_y1 // 4
-        #     for j in range(8):
-        #         y_upper = self.corners_dict[10][1] + (h_y1 * (j + 1)) - offset
-        #         y_lower = self.corners_dict[10][1] + (h_y1 * j) - offset
-        #         offset += 2
-
-        #         if location[0] < x_upper and location[0] > x_lower and location[1] < y_upper and location[1] > y_lower:
-        #             self.board_state[j][i].append(self.FEN_pieces[guess])
-        #             print("ADDED A PIECE")
-        #             return 0
         
         print(f"Piece did not make it with {bbox_data = }")
 
+    def draw_squares(self):
+        '''
+        Draw the squares onto the board using the barycentric functions
+        Use this to check and see what the spaces are for each square
+        '''
+
+        self.set_x_y_square_offset()
+        v_x1,v_y1,v_x2,v_y2,h_x1,h_y1,h_x2,h_y2 = self.vh_xy_12
+
+        offset_list = [0, 10, 16, 18, 22, 18, 10, 2, -100]
+
+        # Draw the sections:
+        for x in range(416):
+            for y in range(416):
+                for i in range(8):
+                    v1 = (self.corners_dict[10][0] + (i * v_x1), self.corners_dict[10][1] + (v_y1 * i))
+                    v2 = (self.corners_dict[10][0] + ((i+1) * v_x1), self.corners_dict[10][1] + (v_y1 * (i+1)))
+                    v3 = (self.corners_dict[11][0] + ((i+1) * v_x2), self.corners_dict[11][1] + (v_y2 * i))
+                    v4 = (self.corners_dict[11][0] + (i * v_x2), self.corners_dict[11][1] + (v_y2 * (i+1)))
+
+                    if self.point_in_quadrilateral([x, y], v1, v2, v3, v4):
+                        for j in range(8):
+                            offset = offset_list[j]
+
+                            if (y > (self.corners_dict[10][1] + (h_y1 * j) - offset)) and (y < (self.corners_dict[10][1] + (h_y1 * (j + 1)) - offset)):
+                                self.labeled_image[y][x] = [32*i, 0, 32*j]
+    
     def print_board(self):
         for i in range(8):
             print("[", end="")

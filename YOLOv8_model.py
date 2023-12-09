@@ -8,7 +8,7 @@ class Chess_YOLO:
         self.model = YOLO('yolov8n.pt')
 
     def load_best_model(self):
-        self.model = YOLO("C:/Users/zebzi/Documents/School/Master_Year/CSCI 5525/Project/Models_Saved/YOLOv8_30epochs.pt")
+        self.model = YOLO("C:/Users/zebzi/Documents/School/Master_Year/CSCI 5525/Project/Models_Saved/YOLOv8_40epochs.pt")
 
     def train_on_data(self, path_to_data, epoch):
         self.model.train(

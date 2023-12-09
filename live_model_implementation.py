@@ -20,14 +20,14 @@ def predict_from_board_photo(CNN_model, YOLO_model, image: np.array, ChessBoard)
     # Cropped image for the CNN to decipher the piece and the bbox data so that
     # the original image can be edited 
     for cropped_image, bbox_data in image_with_bbox_data_list:
-        # try:
-        CNN_percents = CNN_model(np.reshape(cropped_image, (1, 101, 46, 3)))
-        
-        guess = np.argmax(CNN_percents.numpy())
-        _ = ChessBoard.process_guess(guess, bbox_data)
-        # except:
-        #     print("Skipped in piece detection")
-        #     pass
+        try:
+            CNN_percents = CNN_model(np.reshape(cropped_image, (1, 101, 46, 3)))
+            
+            guess = np.argmax(CNN_percents.numpy())
+            _ = ChessBoard.process_guess(guess, bbox_data)
+        except:
+            print("Skipped in piece detection")
+            pass
         
         # print(pieces[guess])
         # print(CNN_percents.numpy())
@@ -41,11 +41,11 @@ def main():
     YOLO_model = Chess_YOLO()
     YOLO_model.load_best_model()
 
-    CNN_with_YOLO_model = load_model("C:/Users/zebzi/Documents/School/Master_Year/CSCI 5525/Project/Models_Saved/CNN_with_YOLO_BBoxes_30epochs.keras")
+    CNN_with_YOLO_model = load_model("C:/Users/zebzi/Documents/School/Master_Year/CSCI 5525/Project/Models_Saved/CNN_with_YOLO_BBoxes_40epochsT.keras")
     
     while(True):
         ChessBoard = ChessBoardObj()
-        full_image = ChessBoard.detect_chessboard()
+        full_image = ChessBoard.detect_chessboard(crop=True)
 
         # Use the models to predict pieces
         predict_from_board_photo(CNN_with_YOLO_model, YOLO_model, full_image, ChessBoard)
@@ -53,10 +53,11 @@ def main():
         # Drawing functions
         # ChessBoard.draw_square_lines(best=True)
         ChessBoard.draw_bbox_and_label()
+        # ChessBoard.draw_squares()
 
         ChessBoard.print_board()
 
-        ChessBoard.get_next_best_move()
+        # ChessBoard.get_next_best_move()
 
         cv2.imshow('Output', cv2.resize(ChessBoard.get_labeled_image(), (832, 832)))
         cv2.waitKey(0)
