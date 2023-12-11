@@ -30,6 +30,13 @@ class ChessBoardObj:
         Take photo of the chess board and use the ArUco markers to find the relative positions of the chess squares.
         Return the 4 corners of the board and the image
         '''
+        # Reset everything except for the board_state
+        self.image = None
+        self.labeled_image = None
+        self.corners_dict = None
+        self.vh_xy_12 = None
+        self.guess_list = []
+
         good_photo = False
         while not good_photo:
             print("Taking a photo of the board")
@@ -42,14 +49,15 @@ class ChessBoardObj:
             if crop and ids.shape[0] >= 4:
                 self.corners_dict = {ids[0][0]: (int(corners[0][0][0][0]), int(corners[0][0][0][1])), ids[1][0]: (int(corners[1][0][0][0]), int(corners[1][0][0][1])),
                                     ids[2][0]: (int(corners[2][0][0][0]), int(corners[2][0][0][1])), ids[3][0]: (int(corners[3][0][0][0]), int(corners[3][0][0][1]))}
-                print(ids)
                 self.image = self.image[self.corners_dict[10][1] - 60 : self.corners_dict[11][1] + 40, self.corners_dict[11][0] - 40 : self.corners_dict[12][0] + 40,  :]
+
                 # cv2.imshow('Output', cv2.resize(self.image, (832, 832)))
                 # cv2.waitKey(0)
-                # cv2.destroyAllWindows() 
+                # cv2.destroyAllWindows()
+
                 self.image = cv2.resize(self.image, (416,416))
                 corners, ids = self.detect_aruco_markers()
-                print(f"Photo after crop found {ids.shape[0]} tags")
+                print(f"#Found {ids.shape[0]} aruco tags {[i for i in ids] = }")
                 self.labeled_image = self.image
             try:
                 if ids.shape[0] >= 4:
@@ -185,7 +193,7 @@ class ChessBoardObj:
         for i in range(8):
             print("[", end="")
             for j in range(8):
-                print(f"{self.board_state[i][j][0] if len(self.board_state[i][j]) > 0 else '_'}{',' if j < 7 else ''} ", end="")
+                print(f"{Counter(self.board_state[i][j]).most_common(1)[0][0] if len(self.board_state[i][j]) > 0 else '_'}{',' if j < 7 else ''} ", end="")
             print("]")
 
     def get_labeled_image(self):
@@ -216,7 +224,10 @@ class ChessBoardObj:
                     if count != 0:
                         FEN_str += f"{count}"
                         count = 0
-                    FEN_str += self.board_state[i][j][0]
+                    # Single guess path
+                    # FEN_str += self.board_state[i][j][0]
+                    # List of guesses
+                    FEN_str += Counter(self.board_state[i][j]).most_common(1)[0][0]
                 else:
                     count += 1
 

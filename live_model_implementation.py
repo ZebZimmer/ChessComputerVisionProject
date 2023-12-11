@@ -34,7 +34,7 @@ def predict_from_board_photo(CNN_model, YOLO_model, image: np.array, ChessBoard)
         # print(bbox_data)
         # print()
 
-    # cv2.imshow("Picture with labels", labelled_image)
+    
 
 def main():
     
@@ -42,13 +42,14 @@ def main():
     YOLO_model.load_best_model()
 
     CNN_with_YOLO_model = load_model("C:/Users/zebzi/Documents/School/Master_Year/CSCI 5525/Project/Models_Saved/CNN_with_YOLO_BBoxes_40epochsT.keras")
-    
+
     while(True):
         ChessBoard = ChessBoardObj()
-        full_image = ChessBoard.detect_chessboard(crop=True)
+        for i in range(10):
+            full_image = ChessBoard.detect_chessboard(crop=True)
 
-        # Use the models to predict pieces
-        predict_from_board_photo(CNN_with_YOLO_model, YOLO_model, full_image, ChessBoard)
+            # Use the models to predict pieces
+            predict_from_board_photo(CNN_with_YOLO_model, YOLO_model, full_image, ChessBoard)
 
         # Drawing functions
         # ChessBoard.draw_square_lines(best=True)
@@ -57,7 +58,7 @@ def main():
 
         ChessBoard.print_board()
 
-        # ChessBoard.get_next_best_move()
+        ChessBoard.get_next_best_move()
 
         cv2.imshow('Output', cv2.resize(ChessBoard.get_labeled_image(), (832, 832)))
         cv2.waitKey(0)

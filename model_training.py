@@ -45,7 +45,7 @@ def train_and_test_CNN_with_YOLO_BBoxes():
     model = ChessCNN_YOLO(x_train[0].shape[0], x_train[0].shape[1])
 
     # Train the model
-    model.train(x_train, y_train, x_valid, y_valid, 40)
+    model.train(x_train, y_train, x_valid, y_valid, 10)
     
     # Test the model
     model.test(x_test, y_test)
