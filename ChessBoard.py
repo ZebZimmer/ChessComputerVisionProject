@@ -59,9 +59,9 @@ class ChessBoardObj:
 
                 if ids.shape[0] >= 4:
                     good_photo = True
-                    
+
             except:
-                print("Bad photo please retake")
+                print("Bad photo please retake") 
 
         self.corners_dict = {ids[0][0]: (int(corners[0][0][0][0]), int(corners[0][0][0][1])), ids[1][0]: (int(corners[1][0][0][0]), int(corners[1][0][0][1])),
                         ids[2][0]: (int(corners[2][0][0][0]), int(corners[2][0][0][1])), ids[3][0]: (int(corners[3][0][0][0]), int(corners[3][0][0][1]))}

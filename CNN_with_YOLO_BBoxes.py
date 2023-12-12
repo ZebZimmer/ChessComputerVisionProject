@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 class ChessCNN_YOLO:
     def __init__(self, input_dim_x, input_dim_y):
         self.model = models.Sequential()
-        self.model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(input_dim_x, input_dim_y, 3)))
+        self.model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(input_dim_x, input_dim_y, 1)))
         self.model.add(layers.MaxPooling2D((2, 2)))
         self.model.add(layers.Conv2D(64, (3, 3), activation='relu'))
         self.model.add(layers.MaxPooling2D((2, 2)))
@@ -17,7 +17,7 @@ class ChessCNN_YOLO:
         self.model.add(layers.Dense(64, activation='relu'))
 
         # Output layer
-        self.model.add(layers.Dense(12, activation='softmax'))
+        self.model.add(layers.Dense(6, activation='softmax'))
 
         self.model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
@@ -30,7 +30,7 @@ class ChessCNN_YOLO:
 
         # self.model.fit(train_images, train_labels, epochs=epochs, validation_data=(validation_images, validation_labels))
         self.model.fit(train_images, train_labels, epochs=epochs, validation_data=(validation_images, validation_labels), callbacks=[save_val_loss_callback])
-        self.model.save(f"C:/Users/zebzi/Documents/School/Master_Year/CSCI 5525/Project/Models_Saved/CNN_with_YOLO_BBoxes_{epochs}epochsT.keras")
+        self.model.save(f"C:/Users/zebzi/Documents/School/Master_Year/CSCI 5525/Project/Models_Saved/CNN_with_YOLO_BBoxes_{epochs}epochsG.keras")
 
         plt.plot(self.validation_losses, color="red", label="Validation Loss")
         plt.plot(self.regular_losses, color="blue", label="Regular Loss")

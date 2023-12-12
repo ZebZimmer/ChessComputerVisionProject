@@ -3,6 +3,7 @@ import numpy as np
 import csv
 from tqdm import tqdm
 import os
+import cv2
 
 datasets_filepath_CSV = r'C:\Users\zebzi\Documents\School\Master_Year\CSCI 5525\Project\CSV_Multiclass'
 datasets_filepath_YOLO = r'C:\Users\zebzi\Documents\School\Master_Year\CSCI 5525\Project\YOLOv8'
@@ -62,16 +63,18 @@ def get_YOLO_data_return_numpy_array(type: str) -> (np.array, np.array):
                     padded_image = pad_cropped_image(cropped_image)
 
                     # Append the image and the label to the list
-                    photos_array.append(padded_image)
+                    photos_array.append(cv2.cvtColor(padded_image, cv2.COLOR_BGR2GRAY))
+                    if label > 5:
+                        label = label - 6
 
-                    blank_label_array = [0 for i in range(12)]
+                    blank_label_array = [0 for i in range(6)]
                     blank_label_array[int(label) - 1] = 1
                     labels_array.append(blank_label_array)
     
     return (np.array(photos_array), np.array(labels_array))
 
 def pad_cropped_image(cropped_image):
-    cropped_image_size = [101, 46, 3] # This is the largest cropped image size from the entire dataset
+    cropped_image_size = [101, 46, 1] # This is the largest cropped image size from the entire dataset
     # Pad the image to the largest cropped image size (calculated by 'hand')
     pad_h = max(cropped_image_size[0] - cropped_image.shape[0], 0)
     pad_w = max(cropped_image_size[1] - cropped_image.shape[1], 0)

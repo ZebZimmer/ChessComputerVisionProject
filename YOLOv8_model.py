@@ -53,7 +53,7 @@ class Chess_YOLO:
             cv2.rectangle(temp_image, (x1, y1), (x2, y2), color=(255, 0, 0), thickness=2)
 
             cropped_image = image[y1:y2, x1:x2, :]
-            padded_image = pad_cropped_image(cropped_image)
+            padded_image = pad_cropped_image(cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY))
 
             pieces_list.append([padded_image, [x1, y1, x2, y2]])
 
