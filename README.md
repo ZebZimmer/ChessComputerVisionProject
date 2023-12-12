@@ -24,6 +24,8 @@ This project aims to automate the process of analyzing a live chessboard using c
 ## Results
 - Overview of the model training, performance metrics, and real-world application results.
 - Visual examples demonstrating the system's ability to analyze chessboard states and predict moves.
+  ![Example of Board Analysis](https://github.com/ZebZimmer/ChessComputerVisionProject/blob/main/Pictures/perfect_read.png)
+
 
 ## Future Work
 - Developing a user-friendly GUI to simplify interactions with the system.
