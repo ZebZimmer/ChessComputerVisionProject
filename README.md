@@ -20,7 +20,13 @@ This project aims to automate the process of analyzing a live chessboard using c
 - The replication of this project requires setting up ArUco markers on the corners of the board.
   - From the White player's perspective the IDs go 10, 11, 12, 13 in counter-clockwise order starting in the top left corner (a8).
   An example can be seen in the image below.
-- After setting up the board, run the live_model_implementation.py script (until the GUI is created) and see the results live.
+- After setting up the board
+  - Create a python virtual environment inside of the project folder: `python -m venv /ChessEnv`  
+  - Activate the virtual environment  
+      -Windows: `.\ChessEnv\Scripts\Activate`  
+      -Mac: `source ChessEnv\bin\activate`  
+  - Install the necessary libraries with `pip install -r requirement.txt`  
+  - Run the live_model_implementation.py script in this environment and see the results live
 
 ## Results
 - Overview of the model training, performance metrics, and real-world application results.
