@@ -43,25 +43,23 @@ class ChessBoardObj:
             self.image = take_photo(3, resize=(not crop))
             self.labeled_image = self.image
             corners, ids = self.detect_aruco_markers()
-            print(f"Found {ids.shape[0]} aruco tags {[i for i in ids] = }")
-
-            #Crop the image to be just the board
-            if crop and ids.shape[0] >= 4:
-                self.corners_dict = {ids[0][0]: (int(corners[0][0][0][0]), int(corners[0][0][0][1])), ids[1][0]: (int(corners[1][0][0][0]), int(corners[1][0][0][1])),
-                                    ids[2][0]: (int(corners[2][0][0][0]), int(corners[2][0][0][1])), ids[3][0]: (int(corners[3][0][0][0]), int(corners[3][0][0][1]))}
-                self.image = self.image[self.corners_dict[10][1] - 60 : self.corners_dict[11][1] + 40, self.corners_dict[11][0] - 40 : self.corners_dict[12][0] + 40,  :]
-
-                # cv2.imshow('Output', cv2.resize(self.image, (832, 832)))
-                # cv2.waitKey(0)
-                # cv2.destroyAllWindows()
-
-                self.image = cv2.resize(self.image, (416,416))
-                corners, ids = self.detect_aruco_markers()
-                print(f"#Found {ids.shape[0]} aruco tags {[i for i in ids] = }")
-                self.labeled_image = self.image
             try:
+                print(f"Found {ids.shape[0]} aruco tags {[i for i in ids] = }")
+
+                #Crop the image to be just the board
+                if crop and ids.shape[0] >= 4:
+                    self.corners_dict = {ids[0][0]: (int(corners[0][0][0][0]), int(corners[0][0][0][1])), ids[1][0]: (int(corners[1][0][0][0]), int(corners[1][0][0][1])),
+                                        ids[2][0]: (int(corners[2][0][0][0]), int(corners[2][0][0][1])), ids[3][0]: (int(corners[3][0][0][0]), int(corners[3][0][0][1]))}
+                    self.image = self.image[self.corners_dict[10][1] - 60 : self.corners_dict[11][1] + 40, self.corners_dict[11][0] - 40 : self.corners_dict[12][0] + 40,  :]
+
+                    self.image = cv2.resize(self.image, (416,416))
+                    corners, ids = self.detect_aruco_markers()
+                    print(f"#Found {ids.shape[0]} aruco tags {[i for i in ids] = }")
+                    self.labeled_image = self.image
+
                 if ids.shape[0] >= 4:
                     good_photo = True
+                    
             except:
                 print("Bad photo please retake")
 
@@ -111,10 +109,6 @@ class ChessBoardObj:
                     cv2.line(self.labeled_image, (x_lower, y_upper), (x_upper, y_upper), (255,0,0), thickness=3)
                     offset += 2
 
-        # cv2.imshow('line', image)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows() 
-
     def draw_bbox_and_label(self):
         '''
         Get the image with the postion of the bounding box corners
@@ -144,7 +138,7 @@ class ChessBoardObj:
         
         self.guess_list.append((bbox_data, guess))
 
-        offset_list = [0, 10, 16, 18, 22, 18, 10, 2, -100]
+        offset_list = [0, 12, 16, 20, 24, 20, 14, 8, -100]
         for i in range(8):
             v1 = (self.corners_dict[10][0] + (i * v_x1), self.corners_dict[10][1])
             v2 = (self.corners_dict[10][0] + ((i+1) * v_x1), self.corners_dict[10][1])
@@ -153,10 +147,7 @@ class ChessBoardObj:
 
             if self.point_in_quadrilateral([location[0], location[1]], v1, v2, v3, v4):
                 for j in range(8):
-                    offset = offset_list[j]
-
-                    # print(f"{self.corners_dict[10][1] + (h_y1 * j) - offset = } and {self.corners_dict[10][1] + h_y1 * (j + 1) - offset = }")
-                    if (location[1] > (self.corners_dict[10][1] + (h_y1 * j) - offset)) and (location[1] < (self.corners_dict[10][1] + (h_y1 * (j + 1)) - offset)):
+                    if (location[1] > (self.corners_dict[10][1] + (h_y1 * j) - offset_list[j])) and (location[1] < (self.corners_dict[10][1] + (h_y1 * (j + 1)) - offset_list[j+1])):
                         self.board_state[j][i].append(self.FEN_pieces[guess])
                         return 0
         
@@ -171,7 +162,7 @@ class ChessBoardObj:
         self.set_x_y_square_offset()
         v_x1,v_y1,v_x2,v_y2,h_x1,h_y1,h_x2,h_y2 = self.vh_xy_12
 
-        offset_list = [0, 10, 16, 18, 22, 18, 10, 2, -100]
+        offset_list = [0, 12, 16, 20, 24, 20, 14, 8, -100]
 
         # Draw the sections:
         for x in range(416):
@@ -184,9 +175,7 @@ class ChessBoardObj:
 
                     if self.point_in_quadrilateral([x, y], v1, v2, v3, v4):
                         for j in range(8):
-                            offset = offset_list[j]
-
-                            if (y > (self.corners_dict[10][1] + (h_y1 * j) - offset)) and (y < (self.corners_dict[10][1] + (h_y1 * (j + 1)) - offset)):
+                            if (y > (self.corners_dict[10][1] + (h_y1 * j) - offset_list[j])) and (y < (self.corners_dict[10][1] + (h_y1 * (j + 1)) - offset_list[j+1])):
                                 self.labeled_image[y][x] = [32*i, 0, 32*j]
     
     def print_board(self):

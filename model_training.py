@@ -1,9 +1,5 @@
-from PIL import Image
-import numpy as np
-import csv
 from CNN_with_CSV_Data import ChessCNN_CSV
 from CNN_with_YOLO_BBoxes import ChessCNN_YOLO
-from tqdm import tqdm
 import tensorflow as tf
 import os
 from data_processing_functions import *
@@ -54,9 +50,6 @@ def train_and_test_CNN_with_YOLO_BBoxes():
 def main():
     # train_and_test_CNN_with_CSV_Data()
     train_and_test_CNN_with_YOLO_BBoxes()
-
-    # Nick said to explain in detail why the Standard CNN probably failed.
-    # The main reason being that there are only 293 unique images. 
 
     
 if __name__ == "__main__":

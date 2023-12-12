@@ -1,10 +1,7 @@
 from YOLOv8_model import Chess_YOLO
-from ultralytics import YOLO
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 import numpy as np
-from PIL import Image
-import matplotlib.pyplot as plt
 import cv2
 from ChessBoard import ChessBoardObj
 
@@ -28,11 +25,6 @@ def predict_from_board_photo(CNN_model, YOLO_model, image: np.array, ChessBoard)
         except:
             print("Skipped in piece detection")
             pass
-        
-        # print(pieces[guess])
-        # print(CNN_percents.numpy())
-        # print(bbox_data)
-        # print()
 
     
 
@@ -63,13 +55,6 @@ def main():
         cv2.imshow('Output', cv2.resize(ChessBoard.get_labeled_image(), (832, 832)))
         cv2.waitKey(0)
         cv2.destroyAllWindows() 
-
-        # plt.imshow(cv2.cvtColor(full_image, cv2.COLOR_BGR2RGB))
-        # plt.show(block=False)
-
-        # plt.pause(10)
-
-        # plt.close('all')
 
 
 if __name__ == "__main__":
