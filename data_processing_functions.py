@@ -5,29 +5,7 @@ from tqdm import tqdm
 import os
 import cv2
 
-datasets_filepath_CSV = r'C:\Users\zebzi\Documents\School\Master_Year\CSCI 5525\Project\CSV_Multiclass'
 datasets_filepath_YOLO = r'C:\Users\zebzi\Documents\School\Master_Year\CSCI 5525\Project\YOLOv8'
-
-def get_CSV_data_return_numpy_array(type: str) -> (np.array, np.array):
-    """
-    Get the type (train, test, valid) of the data and return it as two arrays
-    The first is an array of arrays where each index holds data for an image
-    The second array holds the data labels
-    """
-    # labels_dict = {}
-    photos_array = []
-    labels_array = []
-
-    with open(datasets_filepath_CSV + f"\{type}\_classes.csv") as csvfile:
-        csvreader = csv.reader(csvfile)
-        for row in tqdm(csvreader):
-            if(row[0] != "filename"):
-                # labels_dict[row[0]] = np.array(row[2:], int)
-                image = Image.open(datasets_filepath_CSV + f"\{type}\\" + row[0])
-                photos_array.append(np.array(image.resize((350, 350))))
-                labels_array.append(np.array(row[2:], int))
-
-    return (np.array(photos_array), np.array(labels_array))
 
 def get_YOLO_data_return_numpy_array(type: str) -> (np.array, np.array):
     """
@@ -82,6 +60,6 @@ def pad_cropped_image(cropped_image):
     pad_h = (pad_h // 2, pad_h - (pad_h // 2))
     pad_w = (pad_w // 2, pad_w - (pad_w // 2))
 
-    padded_image = np.pad(cropped_image, ((pad_h), (pad_w), (0,0)))
+    padded_image = np.pad(cropped_image, ((pad_h), (pad_w))) # For training add a (0,0) for the third dimension
 
     return padded_image

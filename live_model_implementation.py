@@ -36,7 +36,7 @@ def main():
     YOLO_model = Chess_YOLO()
     YOLO_model.load_best_model()
 
-    CNN_with_YOLO_model = load_model("C:/Users/zebzi/Documents/School/Master_Year/CSCI 5525/Project/Models_Saved/CNN_with_YOLO_BBoxes_40epochsG.keras")
+    CNN_with_YOLO_model = load_model("Models/CNN_with_YOLO_BBoxes_40epochsG.keras")
 
     while(True):
         ChessBoard = ChessBoardObj()

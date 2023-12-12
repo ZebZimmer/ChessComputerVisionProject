@@ -29,7 +29,7 @@ class ChessCNN_YOLO:
         save_val_loss_callback = LambdaCallback(on_epoch_end=lambda epoch, logs: self.save_and_print_loss(epoch, logs))
 
         self.model.fit(train_images, train_labels, epochs=epochs, validation_data=(validation_images, validation_labels), callbacks=[save_val_loss_callback])
-        self.model.save(f"C:/Users/zebzi/Documents/School/Master_Year/CSCI 5525/Project/Models_Saved/CNN_with_YOLO_BBoxes_{epochs}epochsG.keras")
+        self.model.save(f"ChessComputerVisionProject\Models\CNN_with_YOLO_BBoxes_{epochs}epochsG.keras")
 
         plt.plot(self.validation_losses, color="red", label="Validation Loss")
         plt.plot(self.regular_losses, color="blue", label="Regular Loss")
