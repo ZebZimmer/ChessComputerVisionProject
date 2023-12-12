@@ -24,7 +24,7 @@ This project aims to automate the process of analyzing a live chessboard using c
 ## Results
 - Overview of the model training, performance metrics, and real-world application results.
 - Visual examples demonstrating the system's ability to analyze chessboard states and predict moves.
-  ![Example of Board Analysis](https://github.com/ZebZimmer/ChessComputerVisionProject/blob/main/Pictures/perfect_read.png)
+  ![Example of Board Analysis](https://github.com/ZebZimmer/ChessComputerVisionProject/blob/main/Pictures/perfect_read.png)  
 On C5 the knight is misclassified as a rook. The postprocessing technique, however, of averaging the predictions over 10 images made the final board analysis be 100% correct with a knight in C5. Stockfish returned that the best move in this position for White is C2A2 which is the first move in a two-move checkmate for white.
 
 ## Future Work
