@@ -13,30 +13,21 @@ def predict_from_board_photo(CNN_model, YOLO_model, image: np.array, ChessBoard)
     The image should be a numpy array and it will be drawn on 
     '''
     image_with_bbox_data_list = YOLO_model.board_image_to_piece_locations(image)
-    # labelled_image = np.copy(image)
 
     # Cropped image for the CNN to decipher the piece and the bbox data so that
     # the original image can be edited 
     for cropped_image, bbox_data in image_with_bbox_data_list:
-        # try:
+        try:
             CNN_percents = CNN_model(np.reshape(cropped_image, (1, 101, 46)))
 
             guess = np.argmax(CNN_percents.numpy())
             if (np.mean(cropped_image[48:52, 20:26]) > 125):
                 guess += 6 #White piece
 
-            # print(f"{np.mean(cropped_image[48:52, 20:26])} with {guess = } and {cropped_image[48:52, 20:26].shape = }")
-            # cv2.imshow('Output', cv2.resize(cropped_image, (832, 832)))
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
-            # plt.imshow(cropped_image[48:52, 20:26], cmap='gray')  # Use cmap='gray' for grayscale images
-            # plt.axis('off')  # To turn off axis labels and ticks
-            # plt.show()
-
             _ = ChessBoard.process_guess(guess, bbox_data)
-        # except:
-        #     print("Skipped in piece detection")
-        #     pass
+        except:
+            print("Skipped in piece detection")
+            pass
 
     
 

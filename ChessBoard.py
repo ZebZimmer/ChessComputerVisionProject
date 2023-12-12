@@ -3,7 +3,7 @@ import cv2.aruco as aruco
 import numpy as np
 from photo_functions import *
 from collections import Counter # Use this for max checking of board list
-from lichess_eval import send_FEN_get_move
+from stockfish_eval import send_FEN_get_move
 
 class ChessBoardObj:
     def __init__(self):
